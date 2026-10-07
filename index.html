@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gotta Chart 'Em All! | Pokémon TCG Market Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>Gotta Chart 'Em All!</h1>
+    <p class="tagline">Explore the Pokémon TCG market and build a collection of up to 10 cards.</p>
+
+    <nav aria-label="Application views">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-explore" aria-controls="panel-explore" aria-selected="true">
+          Explore
+        </button>
+        <button type="button" role="tab" id="tab-collection" aria-controls="panel-collection" aria-selected="false" tabindex="-1">
+          My Collection (<span id="tab-collection-count">0</span>/10)
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <p id="status-message" class="status" role="status" aria-live="polite">Loading card data…</p>
+
+    <!-- EXPLORE VIEW -->
+    <section id="panel-explore" class="panel explore-layout" role="tabpanel" aria-labelledby="tab-explore">
+
+      <aside class="filters" aria-labelledby="filters-heading">
+        <h2 id="filters-heading">Filters</h2>
+        <form id="explore-filters">
+          <label for="filter-search">Card name</label>
+          <input type="search" id="filter-search" name="search" placeholder="e.g. Pikachu">
+
+          <label for="filter-type">Type</label>
+          <select id="filter-type" name="type">
+            <option value="all">All types</option>
+          </select>
+
+          <label for="filter-rarity">Rarity</label>
+          <select id="filter-rarity" name="rarity">
+            <option value="all">All rarities</option>
+          </select>
+
+          <label for="filter-series">Set series</label>
+          <select id="filter-series" name="series">
+            <option value="all">All series</option>
+          </select>
+
+          <label for="filter-price-scale">Price scale</label>
+          <select id="filter-price-scale" name="priceScale">
+            <option value="logarithmic">Logarithmic</option>
+            <option value="linear">Linear</option>
+          </select>
+
+          <button type="reset">Reset filters</button>
+        </form>
+        <p><span id="result-count">0</span> cards match.</p>
+      </aside>
+
+      <section class="chart-area" aria-labelledby="market-chart-heading">
+        <h2 id="market-chart-heading">Market Scatter Plot</h2>
+        <div class="chart-container">
+          <canvas id="market-chart" role="img" aria-label="Scatter plot of Pokémon card prices. Not yet implemented."></canvas>
+        </div>
+      </section>
+
+      <aside class="preview" aria-labelledby="preview-heading">
+        <h2 id="preview-heading">Selected Card</h2>
+        <div id="card-preview">
+          <p class="placeholder">Click a point on the chart to inspect a card.</p>
+        </div>
+        <button type="button" id="add-to-collection" disabled>Add to collection</button>
+      </aside>
+
+      <section class="tray" aria-labelledby="tray-heading">
+        <h2 id="tray-heading">Collection Tray (<span id="tray-count">0</span>/10)</h2>
+        <ul id="collection-tray" class="thumb-list"></ul>
+      </section>
+    </section>
+
+    <!-- MY COLLECTION VIEW -->
+    <section id="panel-collection" class="panel collection-layout" role="tabpanel" aria-labelledby="tab-collection" hidden>
+
+      <section class="collection-summary" aria-labelledby="summary-heading">
+        <h2 id="summary-heading">Collection Summary</h2>
+        <div id="collection-summary">
+          <p class="placeholder">Your collection is empty. Add cards from the Explore tab.</p>
+        </div>
+      </section>
+
+      <aside class="filters" aria-labelledby="collection-filters-heading">
+        <h2 id="collection-filters-heading">Collection Filters</h2>
+        <form id="collection-filters">
+          <label for="collection-filter-type">Type</label>
+          <select id="collection-filter-type" name="type">
+            <option value="all">All types</option>
+          </select>
+
+          <label for="collection-filter-rarity">Rarity</label>
+          <select id="collection-filter-rarity" name="rarity">
+            <option value="all">All rarities</option>
+          </select>
+        </form>
+      </aside>
+
+      <section class="chart-area" aria-labelledby="collection-chart-heading">
+        <h2 id="collection-chart-heading">Collection Chart</h2>
+        <div class="chart-container">
+          <canvas id="collection-chart" role="img" aria-label="Chart of your collected cards. Not yet implemented."></canvas>
+        </div>
+      </section>
+
+      <section class="collection-cards" aria-labelledby="collection-cards-heading">
+        <h2 id="collection-cards-heading">My Cards</h2>
+        <ul id="collection-grid" class="thumb-list"></ul>
+      </section>
+
+      <button type="button" id="back-to-explore">← Back to Explore</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Data from the <a href="https://pokemontcg.io/">Pokémon TCG API</a>. Pokémon is © Nintendo / The Pokémon Company.</p>
+  </footer>
+</body>
+</html>
