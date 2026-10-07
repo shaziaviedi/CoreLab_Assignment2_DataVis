@@ -4,129 +4,297 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gotta Chart 'Em All! | Pokémon TCG Market Explorer</title>
+  <link rel="icon" href="assets/icons/pokeball.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Silkscreen:wght@400;700&display=swap">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
   <header class="site-header">
-    <h1>Gotta Chart 'Em All!</h1>
-    <p class="tagline">Explore the Pokémon TCG market and build a collection of up to 10 cards.</p>
+    <div class="brand">
+      <img class="brand-icon" src="assets/icons/pokeball.svg" alt="" width="48" height="48">
+      <div>
+        <h1>Gotta Chart 'Em All!</h1>
+        <p class="tagline">Explore the Pokémon TCG market and build your own collection.</p>
+      </div>
+    </div>
 
     <nav aria-label="Application views">
       <div class="tabs" role="tablist">
         <button type="button" role="tab" id="tab-explore" aria-controls="panel-explore" aria-selected="true">
+          <img class="icon" src="assets/icons/chart.svg" alt="" width="16" height="16">
           Explore
         </button>
         <button type="button" role="tab" id="tab-collection" aria-controls="panel-collection" aria-selected="false" tabindex="-1">
-          My Collection (<span id="tab-collection-count">0</span>/10)
+          <img class="icon" src="assets/icons/collection.svg" alt="" width="16" height="16">
+          My Collection
+          <span class="tab-badge"><span id="tab-collection-count">0</span>/10</span>
         </button>
       </div>
     </nav>
   </header>
 
   <main>
-    <p id="status-message" class="status" role="status" aria-live="polite">Loading card data…</p>
+    <p id="status-message" class="status loading" role="status" aria-live="polite">Loading card data…</p>
 
     <!-- EXPLORE VIEW -->
-    <section id="panel-explore" class="panel explore-layout" role="tabpanel" aria-labelledby="tab-explore">
+    <section id="panel-explore" class="explore-layout" role="tabpanel" aria-labelledby="tab-explore">
 
-      <aside class="filters" aria-labelledby="filters-heading">
-        <h2 id="filters-heading">Filters</h2>
-        <form id="explore-filters">
-          <label for="filter-search">Card name</label>
-          <input type="search" id="filter-search" name="search" placeholder="e.g. Pikachu">
+      <aside class="panel filters" aria-labelledby="filters-heading">
+        <h2 id="filters-heading" class="panel-title">
+          <img class="icon" src="assets/icons/filter.svg" alt="" width="16" height="16">
+          Filters
+        </h2>
+        <form id="explore-filters" class="filter-form">
+          <div class="field">
+            <label for="filter-supertype">Card Category</label>
+            <select id="filter-supertype" name="supertype">
+              <option value="all">All categories</option>
+            </select>
+          </div>
 
-          <label for="filter-type">Type</label>
-          <select id="filter-type" name="type">
-            <option value="all">All types</option>
-          </select>
+          <div class="field">
+            <label for="filter-rarity">Rarity</label>
+            <select id="filter-rarity" name="rarity">
+              <option value="all">All rarities</option>
+            </select>
+          </div>
 
-          <label for="filter-rarity">Rarity</label>
-          <select id="filter-rarity" name="rarity">
-            <option value="all">All rarities</option>
-          </select>
+          <div class="field">
+            <label for="filter-type">Pokémon Type</label>
+            <select id="filter-type" name="type">
+              <option value="all">All types</option>
+            </select>
+          </div>
 
-          <label for="filter-series">Set series</label>
-          <select id="filter-series" name="series">
-            <option value="all">All series</option>
-          </select>
+          <div class="field">
+            <label for="filter-era">Set Era</label>
+            <select id="filter-era" name="era">
+              <option value="all">All eras</option>
+            </select>
+          </div>
 
-          <label for="filter-price-scale">Price scale</label>
-          <select id="filter-price-scale" name="priceScale">
-            <option value="logarithmic">Logarithmic</option>
-            <option value="linear">Linear</option>
-          </select>
+          <fieldset class="field segmented">
+            <legend>Price Scale</legend>
+            <div class="segmented-options">
+              <input type="radio" id="scale-log" name="priceScale" value="log" checked>
+              <label for="scale-log">Log</label>
+              <input type="radio" id="scale-linear" name="priceScale" value="linear">
+              <label for="scale-linear">Linear</label>
+            </div>
+          </fieldset>
 
-          <button type="reset">Reset filters</button>
+          <button type="button" id="reset-filters" class="btn btn-ghost">Reset filters</button>
         </form>
-        <p><span id="result-count">0</span> cards match.</p>
       </aside>
 
-      <section class="chart-area" aria-labelledby="market-chart-heading">
-        <h2 id="market-chart-heading">Market Scatter Plot</h2>
-        <div class="chart-container">
-          <canvas id="market-chart" role="img" aria-label="Scatter plot of Pokémon card prices. Not yet implemented."></canvas>
+      <section class="panel chart-area" aria-labelledby="market-chart-heading">
+        <div class="chart-header">
+          <div>
+            <h2 id="market-chart-heading" class="panel-title">
+              <img class="icon" src="assets/icons/chart.svg" alt="" width="16" height="16">
+              Market Explorer
+            </h2>
+            <p class="chart-note">Each point represents one card. Hover for details, click to inspect.</p>
+          </div>
+          <p class="result-count" aria-live="polite">Showing <span id="result-count">0</span> <span id="result-label">cards</span></p>
         </div>
+        <div class="chart-container">
+          <canvas id="market-chart" role="img" aria-label="Scatter plot of Pokémon card market prices by release year."></canvas>
+          <p id="chart-empty" class="chart-empty" hidden>No cards match these filters.</p>
+        </div>
+        <ul id="rarity-legend" class="chart-legend" aria-label="Point colours by rarity"></ul>
       </section>
 
-      <aside class="preview" aria-labelledby="preview-heading">
-        <h2 id="preview-heading">Selected Card</h2>
-        <div id="card-preview">
-          <p class="placeholder">Click a point on the chart to inspect a card.</p>
+      <aside class="panel preview" aria-labelledby="preview-heading">
+        <h2 id="preview-heading" class="panel-title">
+          <img class="icon" src="assets/icons/card.svg" alt="" width="16" height="16">
+          Selected Card
+        </h2>
+        <div id="card-preview" class="card-preview" aria-live="polite">
+          <div class="card-frame">
+            <img id="preview-image" alt="" hidden>
+            <div id="preview-no-image" class="no-image" hidden>
+              <img class="no-image-icon" src="assets/icons/card.svg" alt="" width="48" height="48">
+              <span>No image available</span>
+            </div>
+            <p id="preview-placeholder" class="placeholder">Select a card from the chart to inspect it.</p>
+          </div>
+
+          <div id="preview-info" class="preview-info" hidden>
+            <h3 id="preview-name" class="preview-name"></h3>
+            <p class="preview-price">
+              <span class="preview-price-label">Market Price</span>
+              <span id="preview-price" class="preview-price-value"></span>
+            </p>
+
+            <dl class="preview-details">
+              <div><dt>Set</dt><dd id="preview-set"></dd></div>
+              <div><dt>Released</dt><dd id="preview-year"></dd></div>
+              <div><dt>Rarity</dt><dd id="preview-rarity"></dd></div>
+              <div><dt>Category</dt><dd id="preview-supertype"></dd></div>
+              <div id="preview-type-row"><dt>Pokémon Type</dt><dd id="preview-type"></dd></div>
+            </dl>
+
+            <dl class="preview-details preview-secondary">
+              <div><dt>HP</dt><dd id="preview-hp"></dd></div>
+              <div><dt>Artist</dt><dd id="preview-artist"></dd></div>
+              <div><dt>Price Finish</dt><dd id="preview-finish"></dd></div>
+            </dl>
+          </div>
         </div>
-        <button type="button" id="add-to-collection" disabled>Add to collection</button>
+        <button type="button" id="add-to-collection" class="btn btn-primary" disabled>
+          <span id="add-button-label">+ Add to Collection</span>
+        </button>
       </aside>
 
-      <section class="tray" aria-labelledby="tray-heading">
-        <h2 id="tray-heading">Collection Tray (<span id="tray-count">0</span>/10)</h2>
-        <ul id="collection-tray" class="thumb-list"></ul>
+      <section class="panel tray" aria-labelledby="tray-heading">
+        <div class="tray-header">
+          <h2 id="tray-heading" class="panel-title">
+            <img class="icon" src="assets/icons/collection.svg" alt="" width="16" height="16">
+            My Collection
+          </h2>
+          <p class="counter" aria-live="polite"><span id="tray-count">0</span> / 10</p>
+          <p id="collection-full" class="tray-message" role="status" hidden>
+            Collection full — remove a card to add another.
+          </p>
+          <button type="button" id="analyze-collection" class="btn btn-secondary" disabled
+            title="Add at least 2 cards to analyze">
+            <img class="icon" src="assets/icons/analyze.svg" alt="" width="16" height="16">
+            Analyze Collection
+          </button>
+        </div>
+        <ol id="collection-tray" class="slots" aria-label="Collection slots">
+          <li class="slot"></li><li class="slot"></li><li class="slot"></li><li class="slot"></li><li class="slot"></li>
+          <li class="slot"></li><li class="slot"></li><li class="slot"></li><li class="slot"></li><li class="slot"></li>
+        </ol>
       </section>
     </section>
 
     <!-- MY COLLECTION VIEW -->
-    <section id="panel-collection" class="panel collection-layout" role="tabpanel" aria-labelledby="tab-collection" hidden>
+    <section id="panel-collection" class="collection-layout" role="tabpanel" aria-labelledby="tab-collection" hidden>
 
-      <section class="collection-summary" aria-labelledby="summary-heading">
-        <h2 id="summary-heading">Collection Summary</h2>
-        <div id="collection-summary">
-          <p class="placeholder">Your collection is empty. Add cards from the Explore tab.</p>
+      <section id="collection-gate" class="panel collection-gate" aria-labelledby="gate-heading">
+        <h2 id="gate-heading" class="panel-title">
+          <img class="icon" src="assets/icons/collection.svg" alt="" width="16" height="16">
+          Not enough cards yet
+        </h2>
+        <p class="gate-message">Add at least 2 cards to compare your collection.</p>
+        <button type="button" id="gate-explore" class="btn btn-primary">
+          <img class="icon" src="assets/icons/chart.svg" alt="" width="16" height="16">
+          Explore Cards
+        </button>
+      </section>
+
+      <section id="collection-summary" class="panel collection-summary" aria-labelledby="summary-heading">
+        <h2 id="summary-heading" class="panel-title">
+          <img class="icon" src="assets/icons/stats.svg" alt="" width="16" height="16">
+          Collection Summary
+        </h2>
+        <div class="summary-body">
+          <dl class="stat-grid">
+            <div class="stat"><dt>Total Cards</dt><dd id="stat-count">0</dd></div>
+            <div class="stat"><dt>Total Market Value</dt><dd id="stat-total">—</dd></div>
+            <div class="stat"><dt>Average Card Value</dt><dd id="stat-average">—</dd></div>
+          </dl>
+          <figure class="top-card">
+            <img id="top-card-image" alt="" width="120" height="168">
+            <figcaption>
+              <span class="top-card-label">Most Valuable Card</span>
+              <span id="top-card-name" class="top-card-name">—</span>
+              <span id="top-card-price" class="top-card-price">—</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      <aside class="filters" aria-labelledby="collection-filters-heading">
-        <h2 id="collection-filters-heading">Collection Filters</h2>
-        <form id="collection-filters">
-          <label for="collection-filter-type">Type</label>
-          <select id="collection-filter-type" name="type">
-            <option value="all">All types</option>
-          </select>
+      <aside id="collection-filters-panel" class="panel filters" aria-labelledby="collection-filters-heading">
+        <h2 id="collection-filters-heading" class="panel-title">
+          <img class="icon" src="assets/icons/filter.svg" alt="" width="16" height="16">
+          Collection Filters
+        </h2>
+        <form id="collection-filters" class="filter-form">
+          <div class="field">
+            <label for="collection-filter-supertype">Card Category</label>
+            <select id="collection-filter-supertype" name="supertype">
+              <option value="all">All categories</option>
+            </select>
+          </div>
 
-          <label for="collection-filter-rarity">Rarity</label>
-          <select id="collection-filter-rarity" name="rarity">
-            <option value="all">All rarities</option>
-          </select>
+          <div class="field">
+            <label for="collection-filter-rarity">Rarity</label>
+            <select id="collection-filter-rarity" name="rarity">
+              <option value="all">All rarities</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="collection-filter-type">Pokémon Type</label>
+            <select id="collection-filter-type" name="type">
+              <option value="all">All types</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="collection-filter-era">Set Era</label>
+            <select id="collection-filter-era" name="era">
+              <option value="all">All eras</option>
+            </select>
+          </div>
         </form>
       </aside>
 
-      <section class="chart-area" aria-labelledby="collection-chart-heading">
-        <h2 id="collection-chart-heading">Collection Chart</h2>
+      <section id="collection-chart-panel" class="panel chart-area" aria-labelledby="collection-chart-heading">
+        <div class="chart-header">
+          <div>
+            <h2 id="collection-chart-heading" class="panel-title">
+              <img class="icon" src="assets/icons/chart.svg" alt="" width="16" height="16">
+              Collection Chart
+            </h2>
+            <p id="collection-chart-note" class="chart-note">One bar per card, highest price first.</p>
+          </div>
+          <p class="result-count" aria-live="polite">
+            Showing <span id="collection-result-count">0</span> of <span id="collection-result-total">0</span> collected cards
+          </p>
+        </div>
+        <fieldset id="collection-view" class="field segmented view-toggle">
+          <legend>View By</legend>
+          <div class="segmented-options">
+            <input type="radio" id="view-value" name="collectionView" value="value" checked>
+            <label for="view-value">Market Value</label>
+            <input type="radio" id="view-rarity" name="collectionView" value="rarity">
+            <label for="view-rarity">Rarity</label>
+            <input type="radio" id="view-era" name="collectionView" value="era">
+            <label for="view-era">Era</label>
+          </div>
+        </fieldset>
         <div class="chart-container">
-          <canvas id="collection-chart" role="img" aria-label="Chart of your collected cards. Not yet implemented."></canvas>
+          <canvas id="collection-chart" role="img" aria-label="Bar chart of your collected cards."></canvas>
+          <p id="collection-chart-empty" class="chart-empty" hidden>No collected cards match these filters.</p>
         </div>
       </section>
 
-      <section class="collection-cards" aria-labelledby="collection-cards-heading">
-        <h2 id="collection-cards-heading">My Cards</h2>
-        <ul id="collection-grid" class="thumb-list"></ul>
+      <section id="collection-cards" class="panel collection-cards" aria-labelledby="collection-cards-heading">
+        <h2 id="collection-cards-heading" class="panel-title">
+          <img class="icon" src="assets/icons/card.svg" alt="" width="16" height="16">
+          My Cards
+        </h2>
+        <ul id="collection-grid" class="thumb-grid"></ul>
+        <p id="collection-empty" class="placeholder" hidden>No collected cards match these filters.</p>
       </section>
 
-      <button type="button" id="back-to-explore">← Back to Explore</button>
+      <button type="button" id="back-to-explore" class="btn btn-ghost back-button">
+        <img class="icon" src="assets/icons/arrow-left.svg" alt="" width="16" height="16">
+        Back to Explorer
+      </button>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>Data from the <a href="https://pokemontcg.io/">Pokémon TCG API</a>. Pokémon is © Nintendo / The Pokémon Company.</p>
+    <p>Data from the <a href="https://pokemontcg.io/">Pokémon TCG API</a>. Pokémon is © Nintendo / The Pokémon Company. This is an unofficial student project.</p>
   </footer>
 </body>
 </html>

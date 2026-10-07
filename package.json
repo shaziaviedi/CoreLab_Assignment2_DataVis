@@ -1,0 +1,12 @@
+{
+  "name": "gotta-chart-em-all",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pokémon TCG market explorer and collection builder built with Chart.js",
+  "scripts": {
+    "export-data": "node scripts/export-cards.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
