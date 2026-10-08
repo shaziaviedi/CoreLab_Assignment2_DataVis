@@ -1,12 +1,37 @@
+/* =========================================================
+   Design tokens
+   ========================================================= */
 :root {
-  --red: #d62828;
-  --dark: #1d1d2c;
-  --light: #f7f7fb;
-  --border: #d8d8e0;
-  --radius: 8px;
+  --bg: #0a0f1f;
+  --bg-stripe: #0d1429;
+  --panel: #131b33;
+  --panel-raised: #1b2546;
+  --panel-inset: #0d1428;
+  --line: #2a3760;
+  --line-strong: #3b4b82;
+  --text: #f3efe4;
+  --muted: #9ea7c4;
+
+  --gold: #ffcb05;
+  --gold-deep: #a88300;
+  --blue: #3d9bff;
+  --blue-deep: #1b5bb0;
+  --red: #e3350d;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  /* Shape of the API card scans (240 x 330), slightly wider than a printed card */
+  --card-ratio: 240 / 330;
+  --font-pixel: "Silkscreen", "Courier New", monospace;
+  --font-body: "Pixelify Sans", system-ui, sans-serif;
 }
 
-* {
+/* =========================================================
+   Base
+   ========================================================= */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -16,199 +41,1168 @@
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  color: var(--dark);
-  background: var(--light);
+  min-height: 100vh;
+  font-family: var(--font-body);
+  /* Pixelify Sans draws its "fi" ligature like an "A". */
+  font-variant-ligatures: none;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--text);
+  background-color: var(--bg);
+  /* Diagonal stripes, like the PC box frame, fading toward the bottom */
+  background-image:
+    linear-gradient(180deg, transparent 0, var(--bg) 900px),
+    repeating-linear-gradient(135deg, var(--bg) 0 14px, var(--bg-stripe) 14px 28px);
 }
 
-h1, h2 {
-  margin: 0 0 0.5rem;
+/* Faint Poké Ball outline in the top corner. Fixed, so it never widens the page. */
+body::before {
+  content: "";
+  position: fixed;
+  top: -180px;
+  right: -140px;
+  z-index: -1;
+  width: 520px;
+  height: 520px;
+  border: 26px solid rgba(255, 255, 255, 0.025);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 58px, rgba(255, 255, 255, 0.025) 58px 84px, transparent 84px),
+    linear-gradient(180deg, transparent calc(50% - 13px), rgba(255, 255, 255, 0.025) calc(50% - 13px) calc(50% + 13px), transparent calc(50% + 13px));
+  pointer-events: none;
 }
 
-h2 {
-  font-size: 1.1rem;
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  text-transform: uppercase;
 }
 
-/* Header and tabs */
-.site-header {
-  padding: 1rem 1.5rem 0;
-  background: var(--red);
-  color: white;
+a {
+  color: var(--blue);
 }
 
-.tagline {
-  margin: 0 0 1rem;
+img.icon,
+.brand-icon,
+.slot img {
+  image-rendering: pixelated;
 }
 
-.tabs {
-  display: flex;
-  gap: 0.25rem;
+.icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 
-[role="tab"] {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: var(--radius) var(--radius) 0 0;
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
-  font: inherit;
-  cursor: pointer;
-}
-
-[role="tab"][aria-selected="true"] {
-  background: var(--light);
-  color: var(--dark);
-  font-weight: bold;
-}
-
-button:focus-visible,
-select:focus-visible,
-input:focus-visible {
-  outline: 3px solid #f4c430;
+:focus-visible {
+  outline: 3px solid var(--gold);
   outline-offset: 2px;
 }
 
-/* Main layout */
-main {
-  padding: 1rem 1.5rem;
+.placeholder {
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
 }
 
-.status {
-  margin: 0 0 1rem;
-}
-
-.status.error {
-  padding: 0.75rem;
-  border: 1px solid var(--red);
-  border-radius: var(--radius);
-  background: #fde8e8;
-}
-
-.panel > section,
-.panel > aside {
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: white;
-}
-
-.explore-layout,
-.collection-layout {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 220px 1fr 260px;
-}
-
-.explore-layout .tray,
-.collection-layout .collection-summary,
-.collection-layout .collection-cards {
-  grid-column: 1 / -1;
-}
-
-.collection-layout .chart-area {
-  grid-column: 2 / -1;
-}
-
-.chart-container {
-  position: relative;
-  min-height: 400px;
-}
-
-/* Forms */
-.filters form {
+/* =========================================================
+   Header and tabs
+   ========================================================= */
+.site-header {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 3vw, 2rem) 1rem;
 }
 
-.filters label {
-  margin-top: 0.5rem;
-  font-weight: 600;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-input,
-select,
-button {
-  font: inherit;
-  padding: 0.4rem;
+.brand-icon {
+  width: 48px;
+  height: 48px;
 }
 
-button:not([role="tab"]) {
+.site-header h1 {
+  font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--gold);
+  text-shadow: 3px 3px 0 var(--blue-deep);
+}
+
+.tagline {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
+/* Tab bar styled like the "Box 1" selector */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border: 3px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--panel);
+}
+
+[role="tab"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
   border: none;
-  border-radius: var(--radius);
-  background: var(--dark);
-  color: white;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
-button:disabled {
-  opacity: 0.5;
+[role="tab"]:hover {
+  color: var(--text);
+  background: var(--panel-raised);
+}
+
+/* Active tab: gold fill, bold text and a pressed bevel (not colour alone) */
+[role="tab"][aria-selected="true"] {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--gold-deep);
+}
+
+[role="tab"][aria-selected="true"] .icon {
+  filter: brightness(0.2);
+}
+
+.tab-badge {
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--panel-inset);
+  color: var(--gold);
+  font-size: 0.7rem;
+}
+
+/* =========================================================
+   Main and shared panel style
+   ========================================================= */
+main {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2rem) 2rem;
+}
+
+/* Chunky double border, like the reference's info boxes */
+.panel {
+  min-width: 0;
+  padding: 1rem;
+  border: 3px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow:
+    inset 0 0 0 3px var(--panel-inset),
+    0 5px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Angular game-menu title tab: gold edge on the left, cut corner on the right */
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.45rem 2rem 0.45rem 0.75rem;
+  border-left: 4px solid var(--gold);
+  background: linear-gradient(90deg, var(--panel-raised) 60%, rgba(27, 37, 70, 0.4));
+  clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  color: var(--gold);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+/* Hierarchy: the chart panels stand out, the filter panels recede */
+.chart-area {
+  border-color: var(--blue-deep);
+  box-shadow:
+    inset 0 0 0 3px var(--panel-inset),
+    0 0 0 1px rgba(61, 155, 255, 0.18),
+    0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.chart-area .panel-title {
+  font-size: 1rem;
+}
+
+.filters {
+  border-color: var(--line);
+  background: #111830;
+}
+
+.status {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.8rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.status.loading::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.5em;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  vertical-align: -0.1em;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.status.error {
+  border-color: var(--red);
+  background: #2a1016;
+  color: var(--text);
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--bg);
+  box-shadow: 0 4px 0 var(--gold-deep);
+}
+
+.btn-secondary {
+  background: var(--blue);
+  color: var(--bg);
+  box-shadow: 0 4px 0 var(--blue-deep);
+}
+
+.btn-primary:active:not(:disabled) {
+  box-shadow: 0 2px 0 var(--gold-deep);
+}
+
+.btn-secondary:active:not(:disabled) {
+  box-shadow: 0 2px 0 var(--blue-deep);
+}
+
+.btn-ghost {
+  border-color: var(--line-strong);
+  background: var(--panel-raised);
+  color: var(--text);
+}
+
+.btn-ghost:hover {
+  border-color: var(--blue);
+}
+
+/* Disabled: dashed outline and flat, so it reads as inactive without colour */
+.btn:disabled {
+  border: 2px dashed var(--line-strong);
+  background: var(--panel-inset);
+  color: var(--muted);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
-/* Preview */
-#card-preview img {
+.btn:disabled .icon {
+  opacity: 0.4;
+}
+
+/* =========================================================
+   Explore layout (desktop: three columns + tray)
+   ========================================================= */
+.explore-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 20%) minmax(0, 1fr) minmax(250px, 24%);
+  grid-template-areas:
+    "filters chart preview"
+    "tray    tray  tray";
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.explore-layout .filters { grid-area: filters; }
+.explore-layout .chart-area { grid-area: chart; }
+.explore-layout .preview { grid-area: preview; }
+.explore-layout .tray { grid-area: tray; }
+
+/* =========================================================
+   Filters
+   ========================================================= */
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.field label,
+.field legend {
+  padding: 0;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.field legend {
+  margin-bottom: 0.35rem;
+}
+
+select {
   width: 100%;
-  border-radius: var(--radius);
+  padding: 0.55rem 2rem 0.55rem 0.7rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--panel-inset);
+  /* Pixel-style gold arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' shape-rendering='crispEdges'%3E%3Cpath fill='%23ffcb05' d='M0 0h8v1H0zM1 1h6v1H1zM2 2h4v1H2zM3 3h2v1H3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 10px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  appearance: none;
+  cursor: pointer;
 }
 
-#card-preview dt {
-  font-weight: 600;
+select:hover,
+select:focus-visible {
+  border-color: var(--blue);
 }
 
-#card-preview dd {
-  margin: 0 0 0.5rem;
+/* A filter that is narrowing the data gets a gold edge and a marker in its label */
+.field:has(option:not([value="all"]):checked) select {
+  border-color: var(--gold-deep);
+  box-shadow: inset 4px 0 0 var(--gold);
 }
 
-#add-to-collection {
-  width: 100%;
-  margin-top: 0.5rem;
+.field:has(option:not([value="all"]):checked) label {
+  color: var(--gold);
 }
 
-.placeholder {
-  color: #666;
-  font-style: italic;
+.field:has(option:not([value="all"]):checked) label::after {
+  content: " ◆";
 }
 
-/* Thumbnails */
-.thumb-list {
+/* Segmented controls (price scale, collection view) */
+.segmented-options {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 0.2rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-inset);
+}
+
+.segmented-options input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented-options label {
+  padding: 0.45rem;
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.segmented-options label:hover {
+  color: var(--text);
+  background: var(--panel-raised);
+}
+
+/* Chosen option: filled, bold and bevelled */
+.segmented-options input:checked + label {
+  background: var(--blue);
+  color: var(--bg);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--blue-deep);
+}
+
+.segmented-options input:focus-visible + label {
+  outline: 3px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.view-toggle {
+  max-width: 28rem;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================
+   Chart area
+   ========================================================= */
+.chart-header {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-header .panel-title {
+  margin-bottom: 0.4rem;
+}
+
+.chart-note {
+  margin: 0;
+  color: var(--muted);
+}
+
+.result-count {
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-inset);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.result-count span {
+  color: var(--gold);
+}
+
+/* Chart.js needs a positioned parent with a real height */
+.chart-container {
+  position: relative;
+  height: clamp(320px, 58vh, 640px);
+  padding: 0.5rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--panel-inset);
+}
+
+.chart-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Compact HTML rarity legend under the chart */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: help;
+}
+
+.chart-legend li.is-empty {
+  opacity: 0.4;
+}
+
+.legend-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+.legend-count {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+}
+
+.legend-marker {
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid var(--text);
+}
+
+.legend-marker.collected {
+  width: 0.65rem;
+  height: 0.65rem;
+  transform: rotate(45deg);
+  background: var(--line-strong);
+}
+
+.legend-marker.selected {
+  border-color: var(--gold);
+  border-width: 3px;
+  border-radius: 50%;
+}
+
+.legend-divider {
+  width: 2px;
+  align-self: stretch;
+  background: var(--line);
+}
+
+/* =========================================================
+   Selected card panel
+   ========================================================= */
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.preview .panel-title {
+  margin-bottom: 0;
+}
+
+.card-preview,
+.preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Name bar with a small Poké Ball red accent */
+.preview-name {
+  padding: 0.5rem 0.75rem;
+  border-left: 5px solid var(--red);
+  border-radius: var(--radius-sm);
+  background: var(--panel-raised);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.preview-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--gold-deep);
+  border-radius: var(--radius-sm);
+  background: var(--panel-inset);
+}
+
+.preview-price-label {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.preview-price-value {
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.no-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.no-image-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.6;
+  image-rendering: pixelated;
+}
+
+.card-frame {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+  aspect-ratio: var(--card-ratio);
+  padding: 0.6rem;
+  border: 2px dashed var(--line-strong);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(61, 155, 255, 0.08), transparent 70%),
+    var(--panel-inset);
+}
+
+/* Selected state: solid gold card-slot frame instead of the dashed placeholder */
+.card-frame:has(#preview-image:not([hidden])) {
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 3px rgba(255, 203, 5, 0.15), 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.card-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.preview-details {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.preview-details > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 2px dotted var(--line);
+}
+
+.preview-details dt {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+/* Silkscreen keeps digits clear (Pixelify's 5 reads as S) */
+.preview-details dd {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Secondary details: smaller and quieter */
+.preview-secondary {
+  font-size: 0.85rem;
+}
+
+.preview-secondary > div {
+  padding: 0.3rem 0;
+  border-bottom-style: dashed;
+}
+
+.preview-secondary dd {
+  color: var(--muted);
+}
+
+.preview > .btn {
+  width: 100%;
+}
+
+/* Type badges, like WATER / FLYING in the reference */
+.type-badge {
+  display: inline-block;
+  margin: 0.1rem 0 0.1rem 0.25rem;
+  padding: 0.1rem 0.45rem;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  background: var(--line-strong);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.type-badge[data-type="Fire"] { background: #d1452c; }
+.type-badge[data-type="Water"] { background: #2f7fd6; }
+.type-badge[data-type="Grass"] { background: #3f9b45; }
+.type-badge[data-type="Lightning"] { background: #c9a10a; }
+.type-badge[data-type="Psychic"] { background: #a64bb3; }
+.type-badge[data-type="Fighting"] { background: #a8613a; }
+.type-badge[data-type="Darkness"] { background: #3c3f55; }
+.type-badge[data-type="Metal"] { background: #6f7f91; }
+.type-badge[data-type="Fairy"] { background: #d0679d; }
+.type-badge[data-type="Dragon"] { background: #8a6b1f; }
+.type-badge[data-type="Colorless"] { background: #8e8a7c; }
+
+/* =========================================================
+   Collection tray (10 slots, like PC box cells)
+   ========================================================= */
+.tray-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.tray-header .panel-title {
+  margin-bottom: 0;
+}
+
+.counter {
+  margin: 0;
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+}
+
+.tray-message {
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  border-left: 3px solid var(--red);
+  background: var(--panel-inset);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.tray-header .btn {
+  margin-left: auto;
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  align-items: start;
   gap: 0.75rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.thumb-list li {
+.slot {
+  position: relative;
+  aspect-ratio: var(--card-ratio);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background-color: var(--panel-inset);
+  /* Faded Poké Ball marks an empty slot */
+  background-image: url("assets/icons/pokeball.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30%;
+  background-blend-mode: luminosity;
+}
+
+.slot:not(.filled) {
+  opacity: 0.5;
+}
+
+/* The frame hugs the image: no aspect box, the image sets the height */
+.slot.filled {
+  aspect-ratio: auto;
+  border: 2px solid var(--blue);
+  background-image: none;
+  box-shadow: 0 3px 0 var(--blue-deep);
+  transition: transform 0.12s, border-color 0.12s;
+}
+
+.slot.filled:hover,
+.slot.filled:focus-within {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.slot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--card-ratio);
+  object-fit: cover;
+  border-radius: 6px;
+  image-rendering: auto;
+}
+
+.slot-remove {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.slot-remove:hover,
+.slot-remove:focus-visible {
+  background: #ff5a3a;
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+/* =========================================================
+   My Collection layout
+   ========================================================= */
+.collection-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 20%) minmax(0, 1fr);
+  grid-template-areas:
+    "summary summary"
+    "filters chart"
+    "cards   cards"
+    "back    back";
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.collection-layout .collection-summary,
+.collection-layout .collection-gate { grid-area: summary; }
+.collection-layout .filters { grid-area: filters; }
+.collection-layout .chart-area { grid-area: chart; }
+.collection-layout .collection-cards { grid-area: cards; }
+.collection-layout .back-button { grid-area: back; justify-self: start; }
+
+.collection-gate {
+  text-align: center;
+}
+
+.gate-message {
+  margin: 1.5rem 0 1.25rem;
+  font-size: 1.15rem;
+}
+
+.collection-gate .btn {
+  margin-bottom: 0.5rem;
+}
+
+.summary-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.top-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gold-deep);
+  border-radius: 10px;
+  background: var(--panel-inset);
+}
+
+.top-card img {
+  width: 84px;
+  height: auto;
+  aspect-ratio: var(--card-ratio);
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.top-card figcaption {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 14rem;
+}
+
+.top-card-label {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.top-card-name {
+  font-size: 1.05rem;
+}
+
+.top-card-price {
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+}
+
+.stat {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  width: 90px;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-inset);
 }
 
-.thumb-list img {
-  width: 100%;
-  border-radius: 4px;
+.stat dt {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
 }
 
-.thumb-list button {
-  font-size: 0.75rem;
+.stat dd {
+  margin: 0.25rem 0 0;
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
 }
 
+.thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  align-items: start;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.thumb-grid:empty {
+  display: none;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
 .site-footer {
-  padding: 1rem 1.5rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1rem clamp(1rem, 3vw, 2rem) 2rem;
+  color: var(--muted);
   font-size: 0.85rem;
 }
 
-/* Small screens: stack everything */
-@media (max-width: 900px) {
-  .explore-layout,
-  .collection-layout {
-    grid-template-columns: 1fr;
+/* =========================================================
+   Tablet: filters move above the chart
+   ========================================================= */
+@media (max-width: 1100px) {
+  .explore-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 34%);
+    grid-template-areas:
+      "filters filters"
+      "chart   preview"
+      "tray    tray";
   }
 
-  .collection-layout .chart-area {
-    grid-column: auto;
+  .collection-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "summary"
+      "filters"
+      "chart"
+      "cards"
+      "back";
+  }
+
+  .filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    align-items: end;
+  }
+
+  .slots {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   Small tablet: the chart takes the full width, the preview
+   sits below it with the card image beside the details
+   ========================================================= */
+@media (max-width: 900px) {
+  .explore-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "filters"
+      "chart"
+      "preview"
+      "tray";
+  }
+
+  .card-preview {
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+  }
+
+  .card-frame {
+    max-width: none;
+  }
+}
+
+/* =========================================================
+   Mobile: single column stack
+   ========================================================= */
+@media (max-width: 720px) {
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tabs [role="tab"] {
+    flex: 1;
+    justify-content: center;
+    gap: 0.35rem;
+    padding-inline: 0.5rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .explore-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "filters"
+      "chart"
+      "preview"
+      "tray";
+  }
+
+  .filter-form {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .chart-container {
+    height: clamp(280px, 60vh, 420px);
+  }
+
+  .tray-header .btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .summary-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .slots {
+    gap: 0.5rem;
+  }
+
+  .slot-remove {
+    top: -0.4rem;
+    right: -0.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .view-toggle {
+    max-width: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .card-preview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card-frame {
+    max-width: 240px;
+  }
+
+  .panel {
+    padding: 0.8rem;
+  }
+
+  .result-count {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status.loading::before {
+    animation: none;
+  }
+
+  .btn,
+  .slot.filled {
+    transition: none;
+  }
+
+  .btn:hover:not(:disabled),
+  .slot.filled:hover,
+  .slot.filled:focus-within {
+    transform: none;
   }
 }
