@@ -4,9 +4,10 @@
   "private": true,
   "description": "Pokémon TCG market explorer and collection builder built with Chart.js",
   "scripts": {
-    "export-data": "node scripts/export-cards.mjs"
+    "export-data": "node scripts/export-cards.js"
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "type": "module"
 }
