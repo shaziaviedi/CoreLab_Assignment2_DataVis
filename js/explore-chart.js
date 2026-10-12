@@ -242,7 +242,8 @@ function legendSpan(className, text, swatchColor) {
 }
 function renderRarityLegend() {
   const counts = new Map();
-  for (const card of state.filteredCards) {
+  // keep counts for hidden groups too, so they can be switched back on
+  for (const card of state.allCards.filter((card) => matchesFilters(card, state.exploreFilters))) {
     const group = getRarityGroup(card.rarity);
     counts.set(group, (counts.get(group) || 0) + 1);
   }
@@ -259,11 +260,26 @@ function renderRarityLegend() {
                 .map((c) => c.rarity),
             )
           : group.rarities;
-      return createLegendItem(
-        [legendSpan("legend-swatch", "", group.color), document.createTextNode(group.label)],
-        counts.get(group) || 0,
-        `Includes: ${members.join(", ")}`,
-      );
+      const hidden = state.hiddenRarityGroups.has(group.label);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "legend-toggle";
+      button.dataset.group = group.label;
+      button.setAttribute("aria-pressed", String(!hidden));
+      button.setAttribute("aria-label", `${hidden ? "Show" : "Hide"} ${group.label} cards`);
+      const count = legendSpan("legend-count", String(counts.get(group) || 0));
+      button.append(legendSpan("legend-swatch", "", group.color), group.label, count);
+      button.addEventListener("click", () => {
+        if (state.hiddenRarityGroups.has(group.label)) state.hiddenRarityGroups.delete(group.label);
+        else state.hiddenRarityGroups.add(group.label);
+        applyExploreFilters();
+        // the legend gets rebuilt, keep keyboard focus on this group
+        [...els.rarityLegend.querySelectorAll("button")]
+          .find((item) => item.dataset.group === group.label)?.focus({ preventScroll: true });
+      });
+      const item = createLegendItem([button], undefined, `Includes: ${members.join(", ")}`);
+      item.classList.toggle("is-empty", !counts.get(group));
+      return item;
     });
 
   const divider = document.createElement("li");

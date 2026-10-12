@@ -101,6 +101,7 @@ const state = {
   allCards: [],
   cardsById: new Map(),
   filteredCards: [],
+  hiddenRarityGroups: new Set(),
   selectedCard: null,
   collection: [], // ids in add order
   activeTab: "explore",

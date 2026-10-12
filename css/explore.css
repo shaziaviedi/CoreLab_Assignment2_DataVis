@@ -317,3 +317,26 @@
 .type-badge[data-type="Colorless"] {
   color: #070b17;
 }
+
+.legend-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.legend-toggle[aria-pressed="false"] {
+  opacity: 0.4;
+}
+.legend-toggle:hover {
+  color: var(--gold);
+}
+.legend-toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 2px;
+}

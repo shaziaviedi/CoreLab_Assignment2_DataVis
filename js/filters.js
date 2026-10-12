@@ -53,7 +53,11 @@ function readFilterForm(form, filters) {
 }
 function applyExploreFilters() {
   readFilterForm(els.exploreForm, state.exploreFilters);
-  state.filteredCards = state.allCards.filter((card) => matchesFilters(card, state.exploreFilters));
+  state.filteredCards = state.allCards.filter(
+    (card) =>
+      matchesFilters(card, state.exploreFilters) &&
+      !state.hiddenRarityGroups.has(getRarityGroup(card.rarity).label),
+  );
 
   // clear the preview if its point is no longer visible
   if (state.selectedCard && !state.filteredCards.includes(state.selectedCard)) {
@@ -69,6 +73,7 @@ function applyExploreFilters() {
   renderRarityLegend();
 }
 function resetExploreFilters() {
+  state.hiddenRarityGroups.clear();
   for (const key of Object.keys(state.exploreFilters)) {
     els.exploreForm.elements[key].value = key === "search" ? "" : "all";
   }
