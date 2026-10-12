@@ -1,0 +1,127 @@
+/* tablet */
+@media (max-width: 1100px) {
+  .explore-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 34%);
+    grid-template-areas:
+      "filters filters"
+      "chart   preview"
+      "tray    tray";
+  }
+  .collection-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "summary"
+      "filters"
+      "chart"
+      "cards"
+      "back";
+  }
+  .filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    align-items: end;
+  }
+  .slots {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* small tablet */
+@media (max-width: 900px) {
+  .explore-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "filters"
+      "chart"
+      "preview"
+      "tray";
+  }
+  .card-preview {
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+  }
+  .card-frame {
+    max-width: none;
+  }
+}
+
+/* mobile */
+@media (max-width: 720px) {
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tabs [role="tab"] {
+    flex: 1;
+    justify-content: center;
+    gap: 0.35rem;
+    padding-inline: 0.5rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+  .filter-form {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+  .chart-container {
+    height: clamp(280px, 60vh, 420px);
+  }
+  .tray-header .btn {
+    width: 100%;
+    margin-left: 0;
+  }
+  .summary-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .slots {
+    gap: 0.5rem;
+  }
+  .slot-remove {
+    top: -0.4rem;
+    right: -0.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  .view-toggle {
+    max-width: none;
+  }
+}
+@media (max-width: 520px) {
+  /* let the heading shrink inside the narrow header */
+  .brand > div {
+    min-width: 0;
+  }
+  .tabs [role="tab"] {
+    padding-inline: 0.25rem;
+    gap: 0.2rem;
+    min-width: 0;
+    white-space: normal;
+  }
+  .card-preview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .card-frame {
+    max-width: 240px;
+  }
+  .panel {
+    padding: 0.8rem;
+  }
+  .result-count {
+    white-space: normal;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status.loading::before {
+    animation: none;
+  }
+  .btn,
+  .slot.filled {
+    transition: none;
+  }
+  .btn:hover:not(:disabled),
+  .slot.filled:hover,
+  .slot.filled:focus-within {
+    transform: none;
+  }
+}

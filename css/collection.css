@@ -1,0 +1,219 @@
+/* collection tray */
+.tray-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.tray-header .panel-title {
+  margin-bottom: 0;
+}
+.counter {
+  margin: 0;
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+}
+.tray-message {
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  border-left: 3px solid var(--red);
+  background: var(--panel-inset);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+.tray-header .btn {
+  margin-left: auto;
+}
+.slots {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  align-items: start;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.slot {
+  position: relative;
+  aspect-ratio: var(--card-ratio);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background-color: var(--panel-inset);
+  background-image: url("assets/icons/pokeball.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30%;
+  background-blend-mode: luminosity;
+}
+.slot:not(.filled) {
+  opacity: 0.5;
+}
+.slot.filled {
+  aspect-ratio: auto;
+  border: 2px solid var(--blue);
+  background-image: none;
+  box-shadow: 0 3px 0 var(--blue-deep);
+  transition:
+    transform 0.12s,
+    border-color 0.12s;
+}
+.slot.filled:hover,
+.slot.filled:focus-within {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+.slot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--card-ratio);
+  object-fit: cover;
+  border-radius: 6px;
+  image-rendering: auto;
+}
+.slot-remove {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.slot-remove:hover,
+.slot-remove:focus-visible {
+  background: #ff5a3a;
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+/* my collection layout */
+.collection-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 20%) minmax(0, 1fr);
+  grid-template-areas:
+    "summary summary"
+    "filters chart"
+    "cards   cards"
+    "back    back";
+  gap: 1.25rem;
+  align-items: start;
+}
+.collection-layout .collection-summary,
+.collection-layout .collection-gate {
+  grid-area: summary;
+}
+.collection-layout .filters {
+  grid-area: filters;
+}
+.collection-layout .chart-area {
+  grid-area: chart;
+}
+.collection-layout .collection-cards {
+  grid-area: cards;
+}
+.collection-layout .back-button {
+  grid-area: back;
+  justify-self: start;
+}
+.collection-gate {
+  text-align: center;
+}
+.gate-message {
+  margin: 1.5rem 0 1.25rem;
+  font-size: 1.15rem;
+}
+.collection-gate .btn {
+  margin-bottom: 0.5rem;
+}
+.summary-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: stretch;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+.top-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gold-deep);
+  border-radius: 10px;
+  background: var(--panel-inset);
+}
+.top-card img {
+  width: 84px;
+  height: auto;
+  aspect-ratio: var(--card-ratio);
+  object-fit: cover;
+  border-radius: 6px;
+}
+.top-card figcaption {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 14rem;
+}
+.top-card-label {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+.top-card-name {
+  font-size: 1.05rem;
+}
+.top-card-price {
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-inset);
+}
+.stat dt {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+.stat dd {
+  margin: 0.25rem 0 0;
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+.thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  align-items: start;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.thumb-grid:empty {
+  display: none;
+}

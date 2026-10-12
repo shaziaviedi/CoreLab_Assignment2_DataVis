@@ -1,0 +1,178 @@
+/* buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 0.08s,
+    box-shadow 0.08s;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+}
+.btn-primary {
+  background: var(--gold);
+  color: var(--bg);
+  box-shadow: 0 4px 0 var(--gold-deep);
+}
+.btn-secondary {
+  background: var(--blue);
+  color: var(--bg);
+  box-shadow: 0 4px 0 var(--blue-deep);
+}
+.btn-primary:active:not(:disabled) {
+  box-shadow: 0 2px 0 var(--gold-deep);
+}
+.btn-secondary:active:not(:disabled) {
+  box-shadow: 0 2px 0 var(--blue-deep);
+}
+.btn-ghost {
+  border-color: var(--line-strong);
+  background: var(--panel-raised);
+  color: var(--text);
+}
+.btn-ghost:hover {
+  border-color: var(--blue);
+}
+.btn:disabled {
+  border: 2px dashed var(--line-strong);
+  background: var(--panel-inset);
+  color: var(--muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.btn:disabled .icon {
+  opacity: 0.4;
+}
+
+/* filters */
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.field label,
+.field legend {
+  padding: 0;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.field legend {
+  margin-bottom: 0.35rem;
+}
+select,
+.field input[type="search"] {
+  width: 100%;
+  padding: 0.55rem 2rem 0.55rem 0.7rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--panel-inset);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  appearance: none;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' shape-rendering='crispEdges'%3E%3Cpath fill='%23ffcb05' d='M0 0h8v1H0zM1 1h6v1H1zM2 2h4v1H2zM3 3h2v1H3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 10px;
+  cursor: pointer;
+}
+select:hover,
+select:focus-visible,
+.field input[type="search"]:hover,
+.field input[type="search"]:focus-visible {
+  border-color: var(--blue);
+}
+.field:has(option:not([value="all"]):checked) select {
+  border-color: var(--gold-deep);
+  box-shadow: inset 4px 0 0 var(--gold);
+}
+.field:has(option:not([value="all"]):checked) label {
+  color: var(--gold);
+}
+.field:has(option:not([value="all"]):checked) label::after {
+  content: " ◆";
+}
+.segmented-options {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  padding: 0.2rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-inset);
+}
+/* hide the radio visually, keep keyboard focus through the label */
+.segmented-options input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.segmented-options label {
+  padding: 0.45rem;
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.segmented-options label:hover {
+  color: var(--text);
+  background: var(--panel-raised);
+}
+.segmented-options input:checked + label {
+  background: var(--blue);
+  color: var(--bg);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--blue-deep);
+}
+.segmented-options input:focus-visible + label {
+  outline: 3px solid var(--gold);
+  outline-offset: 1px;
+}
+.view-toggle {
+  max-width: 28rem;
+  margin-bottom: 1rem;
+}
+
+.search-field {
+  position: relative;
+}
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.search-field input[type="search"] {
+  padding-left: 2.25rem;
+}

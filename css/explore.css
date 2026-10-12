@@ -1,0 +1,319 @@
+/* explore layout */
+.explore-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 20%) minmax(0, 1fr) minmax(250px, 24%);
+  grid-template-areas:
+    "filters chart preview"
+    "tray    tray  tray";
+  gap: 1.25rem;
+  align-items: start;
+}
+.explore-layout .filters {
+  grid-area: filters;
+}
+.explore-layout .chart-area {
+  grid-area: chart;
+}
+.explore-layout .preview {
+  grid-area: preview;
+}
+.explore-layout .tray {
+  grid-area: tray;
+}
+
+/* chart area */
+.chart-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+#panel-explore .chart-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.chart-header .panel-title {
+  margin-bottom: 0.4rem;
+}
+.chart-note {
+  margin: 0;
+  color: var(--muted);
+}
+.result-count {
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-inset);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.result-count span {
+  color: var(--gold);
+}
+/* Chart.js needs a parent with its own height */
+.chart-container {
+  position: relative;
+  height: clamp(320px, 58vh, 640px);
+  padding: 0.5rem;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--panel-inset);
+}
+.chart-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+.chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: help;
+}
+.chart-legend li.is-empty {
+  opacity: 0.4;
+}
+.legend-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+.legend-count {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+}
+.legend-marker {
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid var(--text);
+}
+.legend-marker.collected {
+  width: 0.65rem;
+  height: 0.65rem;
+  transform: rotate(45deg);
+  background: var(--line-strong);
+}
+.legend-marker.selected {
+  border-color: var(--gold);
+  border-width: 3px;
+  border-radius: 50%;
+}
+.legend-divider {
+  width: 2px;
+  align-self: stretch;
+  background: var(--line);
+}
+
+/* selected card panel */
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.preview .panel-title {
+  margin-bottom: 0;
+}
+.card-preview,
+.preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.preview-name {
+  padding: 0.5rem 0.75rem;
+  border-left: 5px solid var(--red);
+  border-radius: var(--radius-sm);
+  background: var(--panel-raised);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.preview-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--gold-deep);
+  border-radius: var(--radius-sm);
+  background: var(--panel-inset);
+}
+.preview-price-label {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+.preview-price-value {
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.no-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+.no-image-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.6;
+  image-rendering: pixelated;
+}
+.card-frame {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+  aspect-ratio: var(--card-ratio);
+  padding: 0.6rem;
+  border: 2px dashed var(--line-strong);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(61, 155, 255, 0.08), transparent 70%),
+    var(--panel-inset);
+}
+.card-frame:has(#preview-image:not([hidden])) {
+  border: 3px solid var(--gold);
+  box-shadow:
+    0 0 0 3px rgba(255, 203, 5, 0.15),
+    0 6px 18px rgba(0, 0, 0, 0.45);
+}
+.card-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.preview-details {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.preview-details > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 2px dotted var(--line);
+}
+.preview-details dt {
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+.preview-details dd {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.preview-secondary {
+  font-size: 0.85rem;
+}
+.preview-secondary > div {
+  padding: 0.3rem 0;
+  border-bottom-style: dashed;
+}
+.preview-secondary dd {
+  color: var(--muted);
+}
+.preview > .btn {
+  width: 100%;
+}
+.type-badge {
+  display: inline-block;
+  margin: 0.1rem 0 0.1rem 0.25rem;
+  padding: 0.1rem 0.45rem;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  background: var(--line-strong);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+.type-badge[data-type="Fire"] {
+  background: #d1452c;
+}
+.type-badge[data-type="Water"] {
+  background: #2f7fd6;
+}
+.type-badge[data-type="Grass"] {
+  background: #3f9b45;
+}
+.type-badge[data-type="Lightning"] {
+  background: #c9a10a;
+}
+.type-badge[data-type="Psychic"] {
+  background: #a64bb3;
+}
+.type-badge[data-type="Fighting"] {
+  background: #a8613a;
+}
+.type-badge[data-type="Darkness"] {
+  background: #3c3f55;
+}
+.type-badge[data-type="Metal"] {
+  background: #6f7f91;
+}
+.type-badge[data-type="Fairy"] {
+  background: #d0679d;
+}
+.type-badge[data-type="Dragon"] {
+  background: #8a6b1f;
+}
+.type-badge[data-type="Colorless"] {
+  background: #8e8a7c;
+}
+
+/* dark text on the lighter type colours */
+.type-badge[data-type="Water"],
+.type-badge[data-type="Grass"],
+.type-badge[data-type="Lightning"],
+.type-badge[data-type="Metal"],
+.type-badge[data-type="Fairy"],
+.type-badge[data-type="Colorless"] {
+  color: #070b17;
+}
